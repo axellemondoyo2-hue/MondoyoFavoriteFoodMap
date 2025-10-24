@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My 3 Favorite Food Stops Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🍔 My 3 Favorite Food Stops in Manolo Fortich</h1>
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    // Initialize map centered in Manolo Fortich
+    const map = L.map('map').setView([8.3675, 124.8652], 18);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Load food data from JSON
+    fetch('food.json')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(place => {
+          const marker = L.marker([place.lat, place.lng]).addTo(map);
+          marker.bindPopup(`
+            <h3>${place.name}</h3>
+            <img src="${place.image}" alt="${place.name}" width="200" class="popup-img"><br>
+            <p>${place.description}</p>
+          `);
+        });
+      });
+
+    // Fixed "You are here" location
+    const myLocation = [8.367631, 124.865528];
+
+    // Custom blue marker icon
+    const userIcon = L.icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/447/447031.png',
+      iconSize: [35, 35],
+      iconAnchor: [17, 34],
+      popupAnchor: [0, -30]
+    });
+
+    // Add your location marker
+    const myMarker = L.marker(myLocation, { icon: userIcon }).addTo(map);
+    myMarker.bindPopup("<b>You are here 📍</b>").openPopup();
+
+    // Optional: Center map on your location
+    map.setView(myLocation, 18);
+  </script>
+  <img src="" alt="">
+</body>
+</html>
